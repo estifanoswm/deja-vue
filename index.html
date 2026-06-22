@@ -4,12 +4,68 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Déjà Vue · Memory Match</title>
+    <style>
+      html, body { height: 100%; }
+      body { margin: 0; display: flex; flex-direction: column; min-height: 100vh; background: #0A2025;
+             font-family: system-ui, sans-serif; }
+      #root { display: flex; flex-direction: column; flex: 1 0 auto; }
+      #root > div { min-height: 0 !important; flex: 1 0 auto; }
+      footer { flex-shrink: 0; }
+
+      /* hide the game's own built-in header so the title is not shown twice */
+      #root header { display: none !important; }
+
+      /* top header bar */
+      .topbar { flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;
+                padding: 14px 24px; background: #0A2025; border-bottom: 1px solid #1F4B54; }
+      .brand { display: flex; align-items: baseline; gap: 12px; }
+      .brand .name { font-family: Georgia, 'Times New Roman', serif; font-size: 26px; font-weight: 600;
+                     color: #EAF2F0; }
+      .brand .tag { font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; color: #85A6AC; }
+      .rules-btn { background: transparent; color: #E0A458; border: 1px solid #E0A458;
+                   padding: 8px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; }
+      .rules-btn:hover { background: rgba(224,164,88,0.12); }
+
+      /* rules popup */
+      .overlay { position: fixed; inset: 0; background: rgba(8,24,28,0.78); display: none;
+                 align-items: center; justify-content: center; padding: 20px; z-index: 100; }
+      .overlay.open { display: flex; }
+      .modal { width: 100%; max-width: 440px; background: #143840; border: 1px solid #1F4B54;
+               border-radius: 18px; padding: 26px 28px; color: #EAF2F0; }
+      .modal h2 { margin: 0 0 14px; color: #E0A458; font-size: 22px; }
+      .modal ul { margin: 0; padding-left: 18px; line-height: 1.6; font-size: 15px; }
+      .modal li { margin: 6px 0; }
+      .modal .close { margin-top: 22px; width: 100%; background: #E0A458; color: #1A1208;
+                      border: none; padding: 12px; border-radius: 12px; font-size: 15px; font-weight: 600; cursor: pointer; }
+    </style>
   </head>
-  <body style="margin:0">
+  <body>
+    <header class="topbar">
+      <div class="brand">
+        <span class="name">Déjà Vue</span>
+        <span class="tag">memory match</span>
+      </div>
+      <button class="rules-btn" onclick="document.getElementById('rules').classList.add('open')">How to play</button>
+    </header>
+
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
-    <footer style="text-align:center; padding:1em; background-color:#0A2025; color:#85A6AC; font-family:system-ui, sans-serif; font-size:13px;">
+
+    <footer style="text-align:center; padding:1em; background-color:#0A2025; color:#85A6AC; font-size:13px;">
       <p style="margin:0">© 2026 Déjà Vue &nbsp;·&nbsp; Designed by <a href="https://estifanoswm.vercel.app/" target="_blank" style="color:#E0A458; text-decoration:none;">Estifanos Wondem Meshesha</a> &nbsp;·&nbsp; SEG3125 Assignment 3</p>
     </footer>
-  </body>
-</html>
+
+    <div class="overlay" id="rules" onclick="if(event.target===this)this.classList.remove('open')">
+      <div class="modal">
+        <h2>How to play</h2>
+        <ul>
+          <li>Pick a difficulty and a symbol theme, then press Start.</li>
+          <li>All cards begin face down.</li>
+          <li>Click two cards on each turn to flip them.</li>
+          <li>If the symbols match, the pair stays face up. If not, they flip back.</li>
+          <li>Clear the whole board by finding every pair.</li>
+          <li>Win in as few moves and as little time as you can. Your star rating reflects how efficiently you played.</li>
+        </ul>
+        <button class="close" onclick="document.getElementById('rules').classList.remove('open')">Got it</button>
+      </div>
+    </div>

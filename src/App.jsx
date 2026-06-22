@@ -217,15 +217,15 @@ function Setup({ level, setLevel, themeKey, setThemeKey, onStart }) {
   return (
     <div style={styles.setup}>
       <div style={styles.lead}>
-        <h1 style={styles.h1}>Find every pair.</h1>
+        <h1 style={styles.h1}>GROUND RULE : Find every pair.</h1>
         <p style={styles.sub}>
           Flip two cards at a time and remember where each symbol hides. Match all
-          pairs in as few moves as you can.
+          pairs in as few moves as you can. 🧠 🤯
         </p>
       </div>
 
       <section style={styles.group}>
-        <div style={styles.groupLabel}>Difficulty</div>
+        <div style={styles.groupLabel}>Difficulty 🥶</div>
         <div style={styles.optionRow}>
           {Object.entries(LEVELS).map(([key, l]) => (
             <button
@@ -246,7 +246,7 @@ function Setup({ level, setLevel, themeKey, setThemeKey, onStart }) {
       </section>
 
       <section style={styles.group}>
-        <div style={styles.groupLabel}>Symbols</div>
+        <div style={styles.groupLabel}>Symbols 🤷🏽‍♂️</div>
         <div style={styles.themeRow}>
           {Object.entries(THEMES).map(([key, t]) => (
             <button
