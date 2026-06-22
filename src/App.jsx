@@ -54,6 +54,55 @@ function shuffle(arr) {
   return a;
 }
 
+function playSound(type) {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  
+  if (type === 'flip') {
+    osc.frequency.value = 300;
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.1);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.1);
+  }
+  
+  if (type === 'match') {
+    osc.frequency.setValueAtTime(400, ctx.currentTime);
+    osc.frequency.setValueAtTime(600, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.3);
+  }
+  
+  if (type === 'win') {
+    [400, 500, 600, 800].forEach((freq, i) => {
+      const o = ctx.createOscillator();
+      const g = ctx.createGain();
+      o.connect(g);
+      g.connect(ctx.destination);
+      o.frequency.value = freq;
+      g.gain.setValueAtTime(0.12, ctx.currentTime + i * 0.12);
+      g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + i * 0.12 + 0.2);
+      o.start(ctx.currentTime + i * 0.12);
+      o.stop(ctx.currentTime + i * 0.12 + 0.2);
+    });
+  }
+  
+  if (type === 'nomatch') {
+    osc.frequency.setValueAtTime(200, ctx.currentTime);
+    osc.frequency.setValueAtTime(150, ctx.currentTime + 0.1);
+    gain.gain.setValueAtTime(0.08, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.2);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.2);
+  }
+}
+
 function buildDeck(pairs, themeKey) {
   const chosen = THEMES[themeKey].set.slice(0, pairs);
   const doubled = chosen.flatMap((emoji, i) => [
@@ -114,9 +163,11 @@ export default function App() {
   useEffect(() => {
     if (screen === "play" && pairs > 0 && matched === pairs) {
       setWon(true);
+      playSound("win");
       clearInterval(timerRef.current);
     }
   }, [matched, pairs, screen]);
+
 
   function handleFlip(index) {
     if (locked || won) return;
@@ -127,6 +178,7 @@ export default function App() {
     const open = [...flipped, index];
     setDeck(next);
     setFlipped(open);
+    playSound("flip");
 
     if (open.length === 2) {
       setMoves((m) => m + 1);
@@ -138,12 +190,14 @@ export default function App() {
           setMatched((m) => m + 1);
           setFlipped([]);
           setLocked(false);
+          playSound("match");
         }, 420);
       } else {
         setTimeout(() => {
           setDeck((d) => d.map((c, i) => (i === a || i === b ? { ...c, flipped: false } : c)));
           setFlipped([]);
           setLocked(false);
+          playSound("nomatch");
         }, 820);
       }
     }
@@ -665,6 +719,8 @@ const styles = {
     margin: "0 0 16px",
     letterSpacing: "-0.01em",
   },
+
+  
   starRow: { display: "flex", justifyContent: "center", gap: 8, marginBottom: 22 },
   star: { fontSize: 30 },
   winStats: { display: "flex", alignItems: "center", justifyContent: "center", gap: 22, marginBottom: 26 },
